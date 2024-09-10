@@ -1,0 +1,12 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: ping
+pong:
+  url: http://localhost:8088
+
+
+logging:
+  config:
+    file: ${user.dir}/logs/ping.log
