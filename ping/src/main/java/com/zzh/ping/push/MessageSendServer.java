@@ -27,17 +27,14 @@ public class MessageSendServer {
     private static final Logger logger = LoggerFactory.getLogger(MessageSendServer.class);
     @Autowired
     private WebClient webClient;
-    private static final String LOCK_FILE_NAME = "ping.lock";
-    private static final int MAX_CONCURRENT_REQUESTS = 2;
 
     public void pushMessages() {
-
         Flux.interval(Duration.ofSeconds(1)) // 一秒发送一条信息
                 .map(tick -> "hello")
                 .flatMap(t->{
                     //获取锁
                     FileLock fileLock=getLockTry();
-                   //如果锁后休眠，让其他进程获取文件锁发送成功，一秒发送请求两个进程随机请求成功
+
                     if (fileLock!=null) {
                         return pongPushInit(t,fileLock);
                     }else {
@@ -55,21 +52,21 @@ public class MessageSendServer {
 
     public Mono<String> pongPushInit(String data,FileLock fileLock) {
             return webClient.post()
-                    .uri("/receive")
+                    .uri("/receive")//请求路径
                     .contentType(MediaType.TEXT_PLAIN)
-                    .bodyValue(data)
+                    .bodyValue(data)//请求参数
                     .retrieve()
                     .bodyToMono(String.class)
                     .onErrorResume(error -> {
-                        return Mono.just("Error occurred while calling pong service");
+                        return Mono.just("pong service Error ===========");
                     })
                     .doFinally(unLock->{
                         try {
                             logger.info("获取文件锁为======{}",fileLock);
                             fileLock.release();
-                            logger.info("释放锁成功");
+                            logger.info("释放锁成功=======");
                         }catch (Exception e){
-                            logger.error("文件释放锁异常");
+                            logger.error("文件释放锁异常Error===========");
                         }
 
                     })
@@ -84,13 +81,13 @@ public class MessageSendServer {
     }
 
     private FileLock getFileLimit(){
-        for(int i=0;i<MAX_CONCURRENT_REQUESTS;i++){
+        for(int i=0;i<2;i++){
             try{
-                RandomAccessFile file = new RandomAccessFile(LOCK_FILE_NAME+i, "rw");
+                RandomAccessFile file = new RandomAccessFile("ping_lockup"+i, "rw");
                 FileChannel channel =file.getChannel();
                   FileLock fileLock =channel.tryLock();
                   if(fileLock!=null){
-                      logger.info("获取文件锁名{}",LOCK_FILE_NAME+i);
+                      logger.info("获取文件锁名========{}","ping_lockup"+i);
                       return fileLock;
                   }
             }catch (Exception e){
