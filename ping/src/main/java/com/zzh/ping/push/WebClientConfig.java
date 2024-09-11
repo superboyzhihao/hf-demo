@@ -1,4 +1,4 @@
-package com.example.ping.push;
+package com.zzh.ping.push;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

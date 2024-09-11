@@ -1,10 +1,10 @@
-package com.example.pong;
+package com.zzh.ping;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PongApplicationTests {
+class PingApplicationTests {
 
     @Test
     void contextLoads() {

@@ -1,4 +1,4 @@
-package com.example.ping.push;
+package com.zzh.ping.push;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class MessageSendServer {
                         logger.error("Speed limited");
                         return Mono.just("Request not sent");
                     }
-                }) // 推送数据到消费者服务
+                }) // 发送信息至pong端
                 .subscribe(response ->{
                                 logger.info("接收到pong服务的响应消息为{}",response);
                         } ,

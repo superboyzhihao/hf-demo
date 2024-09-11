@@ -1,13 +1,16 @@
-package com.example.pong;
+package com.zzh.ping;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author zzh
+ * @date 2024/09/10
+ */
 @SpringBootApplication
-public class PongApplication {
-
+public class PingServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(PongApplication.class, args);
+        SpringApplication.run(PingServiceApplication.class, args);
     }
 
 }

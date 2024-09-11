@@ -1,4 +1,4 @@
-package com.example.pong.controller;
+package com.zzh.pong.controller;
 
 import com.google.common.util.concurrent.RateLimiter;
 import org.slf4j.Logger;

@@ -1,10 +1,8 @@
-package com.example.pong.controller
+package com.zzh.pong.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import spock.lang.Specification
 
@@ -29,7 +27,7 @@ class ReceiveControllerTest extends Specification {
 
         where:
         value | expected
-        "hello"      | ResponseEntity.ok("world")
+        "hello" | ResponseEntity.ok("world")
 
     }
 
