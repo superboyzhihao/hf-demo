@@ -22,16 +22,11 @@ public class ReceiveController {
     private final RateLimiter rateLimiter = RateLimiter.create(1.0);
 
     @PostMapping(value = "/receive")
-    public Mono<ResponseEntity<String>> receive(@RequestBody String message) {
+    public Mono<ResponseEntity<String>> receive(@RequestBody String message) throws InterruptedException {
         if(rateLimiter.tryAcquire()){
-            logger.info("接收到ping服务端的消息====={}" ,message);
             //休眠不释放文件锁
-            try {
-                Thread.sleep(3000);
-            }catch (Exception e){
-                logger.error(e.getMessage());
-            }
-
+            Thread.sleep(3000);
+            logger.info("接收到ping服务端的消息=====【{}】" ,message);
             return Mono.just(ResponseEntity.ok().body("world"));
         }else {
             return Mono.just(ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Too Many Requests，Please try again later！"));

@@ -28,8 +28,9 @@ public class MessageSendServer {
     @Autowired
     private WebClient webClient;
 
-    public void pushMessages() {
-        Flux.interval(Duration.ofSeconds(1)) // 一秒发送一条信息
+    public void sendMessages() {
+        // 一秒发送一条信息
+        Flux.interval(Duration.ofSeconds(1))
                 .map(tick -> "hello")
                 .flatMap(t->{
                     //获取锁
@@ -38,14 +39,13 @@ public class MessageSendServer {
                     if (fileLock!=null) {
                         return pongPushInit(t,fileLock);
                     }else {
-                        logger.error("Speed limited");
+                        logger.error("限制速度");
                         return Mono.just("Request not sent");
                     }
                 }) // 发送信息至pong端
                 .subscribe(response ->{
                                 logger.info("接收到pong服务的响应消息为{}",response);
-                        } ,
-                        error -> logger.error("请求错误"));
+                        });
     }
 
 
@@ -76,22 +76,21 @@ public class MessageSendServer {
 
     @PostConstruct
     public void initMethod() {
-        pushMessages();
-
+        sendMessages();
     }
 
     private FileLock getFileLimit(){
-        for(int i=0;i<2;i++){
+        for(int i=0;i<5;i++){
             try{
                 RandomAccessFile file = new RandomAccessFile("ping_lockup"+i, "rw");
                 FileChannel channel =file.getChannel();
                   FileLock fileLock =channel.tryLock();
                   if(fileLock!=null){
-                      logger.info("获取文件锁名========{}","ping_lockup"+i);
+                      logger.info("获取锁名========{}","ping_lockup"+i);
                       return fileLock;
                   }
             }catch (Exception e){
-                logger.error("获取文件锁失败");
+                logger.error("获取锁失败");
             }
         }
         return null;
@@ -108,14 +107,14 @@ public class MessageSendServer {
                 if (!Objects.equals(fileLock, null)) {
                     return fileLock;
                 } else {
-                    if (System.currentTimeMillis() - start > 2000) {
+                    if (System.currentTimeMillis() - start > 3000) {
                         return null;
                     }
                 }
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             }
         }catch (Exception e){
-            logger.error("获取文件锁失败");
+            logger.error("获取锁失败");
         }
         return fileLock;
     }

@@ -10,20 +10,16 @@ class MessageSendServerTest extends Specification {
 
     @Autowired
     private MessageSendServer messageSendServer
-//    @MockBean
-//    private WebClient webClient
 
     def setup() {
-        // 创建一个模拟的 WebClient
-//        webClient =Mock(WebClient)
-//        messageSendServer=new MessageSendServer()
+
     }
 
     def "Test pushMessages method with success request"() {
         given:
 
         when:
-        messageSendServer.pongPushInit("hello",null)
+        messageSendServer.pongPushInit("hello", messageSendServer.getLockTry())
 
         then:
         print("world")
@@ -37,6 +33,18 @@ class MessageSendServerTest extends Specification {
         print("getLockTry")
     }
 
+    def "Test pushMessages"() {
+        when:
+        messageSendServer.sendMessages()
+        then:
+        print("pushMessages")
+    }
 
+    def "Test getFileLimit"() {
+        when:
+        messageSendServer.getFileLimit()
+        then:
+        print("getFileLimit")
+    }
 
 }
